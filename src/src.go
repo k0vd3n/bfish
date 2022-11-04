@@ -1,7 +1,5 @@
 package src
 
-const tmp = 1
-
 var ORIG_P = [16 + 2]uint32{
 	0x243f6a88, 0x85a308d3, 0x13198a2e, 0x03707344,
 	0xa4093822, 0x299f31d0, 0x082efa98, 0xec4e6c89,
