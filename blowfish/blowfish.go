@@ -2,9 +2,9 @@ package blowfish
 
 import "bfish/src"
 
-const (
-	N = 16
-)
+var N int = 16
+
+var Key = []byte("This is a crypto blowfish 448 bits key and 64 bits text!")
 
 type Blowfish struct {
 	P [16 + 2]uint32
