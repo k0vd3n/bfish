@@ -50,6 +50,15 @@ var (
 			fmt.Printf("%#x\n", src.ORIG_S[i][j])
 		},
 	}
+	getPkeyCmd = &cobra.Command{
+		Use:   "pkey [pkey number]",
+		Short: "prints pkey",
+		Args:  cobra.MaximumNArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			i, _ := strconv.Atoi(args[0])
+			fmt.Printf("%#x\n", src.ORIG_P[i])
+		},
+	}
 )
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -75,4 +84,5 @@ func init() {
 
 	// getCmd commands
 	getCmd.AddCommand(getSboxCmd)
+	getCmd.AddCommand(getPkeyCmd)
 }
