@@ -103,6 +103,14 @@ hexadecimal and as a string`,
 			// }
 			switch mode {
 			case "string":
+				_, err := strconv.Atoi(args[0])
+				if err != nil {
+					os.Exit(1)
+				}
+				_, err = strconv.Atoi(args[1])
+				if err != nil {
+					os.Exit(1)
+				}
 				xl = binary.BigEndian.Uint32([]byte(args[0]))
 				xr = binary.BigEndian.Uint32([]byte(args[1]))
 				binary.BigEndian.PutUint32(b, xl)
@@ -126,17 +134,17 @@ hexadecimal and as a string`,
 			}
 			var bf = &blowfish.Blowfish{}
 			bf = blowfish.New(blowfish.Key)
-			bf.Decrypt(&xl, &xr)
+			bf.Encrypt(&xl, &xr)
 			binary.BigEndian.PutUint32(b, xl)
-			fmt.Println("source text xl in []byte: ", b)
+			fmt.Println("ciphertex xl in []byte: ", b)
 			result = append(result, b...)
 			binary.BigEndian.PutUint32(b, xr)
-			fmt.Println("source text xj in []byte: ", b)
+			fmt.Println("ciphertex xj in []byte: ", b)
 
-			fmt.Println("source text xl in decimal: ", xl)
-			fmt.Println("source text xr in decimal: ", xr)
-			fmt.Printf("source text xl in hex: %#x\n", xl)
-			fmt.Printf("source text xr in hex: %#x\n", xr)
+			fmt.Println("ciphertex xl in decimal: ", xl)
+			fmt.Println("ciphertex xr in decimal: ", xr)
+			fmt.Printf("ciphertex xl in hex: %#x\n", xl)
+			fmt.Printf("ciphertex xr in hex: %#x\n", xr)
 
 			result = append(result, b...)
 			fmt.Println(string(result))
