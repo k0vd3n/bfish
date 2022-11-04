@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/common-nighthawk/go-figure"
 	"github.com/spf13/cobra"
@@ -59,6 +60,27 @@ var (
 			fmt.Printf("%#x\n", src.ORIG_P[i])
 		},
 	}
+	getAllCmd = &cobra.Command{
+		Use:   "all [string]",
+		Short: "prints all elements of a specific parameter",
+		Long: `outputs all elements of a specific parameter
+example: get all pkeys; get all sboxes`,
+		Args: cobra.MaximumNArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			switch strings.Join(args, " ") {
+			case "s", "sboxes":
+				for i := 0; i < 4; i++ {
+					for j := 0; j < 256; j++ {
+						fmt.Printf("%#x\n", src.ORIG_S[i][j])
+					}
+				}
+			case "p", "pkeys":
+				for i := 0; i < 18; i++ {
+					fmt.Printf("%#x\n", src.ORIG_P[i])
+				}
+			}
+		},
+	}
 )
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -85,4 +107,5 @@ func init() {
 	// getCmd commands
 	getCmd.AddCommand(getSboxCmd)
 	getCmd.AddCommand(getPkeyCmd)
+	getCmd.AddCommand(getAllCmd)
 }
