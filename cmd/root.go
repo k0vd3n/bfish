@@ -4,8 +4,10 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"bfish/src"
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/common-nighthawk/go-figure"
 	"github.com/spf13/cobra"
@@ -32,10 +34,21 @@ var (
 		// has an action associated with it:
 		// Run: func(cmd *cobra.Command, args []string) { },
 	}
-	getIdCmd = &cobra.Command{
+	getCmd = &cobra.Command{
 		Use:   "get [strings to commands]",
 		Short: "prints Sboxes, Pkeys, Nrounds, Key",
 		Args:  cobra.MaximumNArgs(1),
+	}
+
+	getSboxCmd = &cobra.Command{
+		Use:   "sbox [sbox number] [sbox column]",
+		Short: "prints Sbox",
+		Args:  cobra.MinimumNArgs(2),
+		Run: func(cmd *cobra.Command, args []string) {
+			i, _ := strconv.Atoi(args[0])
+			j, _ := strconv.Atoi(args[1])
+			fmt.Printf("%#x\n", src.ORIG_S[i][j])
+		},
 	}
 )
 
@@ -58,5 +71,8 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	rootCmd.AddCommand(getIdCmd)
+	rootCmd.AddCommand(getCmd)
+
+	// getCmd commands
+	getCmd.AddCommand(getSboxCmd)
 }
