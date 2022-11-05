@@ -171,6 +171,7 @@ decimal, hexadecimal and as a string`,
 				xl = binary.BigEndian.Uint32([]byte(args[0]))
 				xr = binary.BigEndian.Uint32([]byte(args[1]))
 				binary.BigEndian.PutUint32(b, xl)
+				fmt.Println(strings.Join(args, " "))
 				fmt.Println(b)
 				binary.BigEndian.PutUint32(b, xr)
 				fmt.Println(b)
