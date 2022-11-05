@@ -103,14 +103,14 @@ hexadecimal and as a string`,
 			// }
 			switch mode {
 			case "string":
-				_, err := strconv.Atoi(args[0])
-				if err != nil {
-					os.Exit(1)
-				}
-				_, err = strconv.Atoi(args[1])
-				if err != nil {
-					os.Exit(1)
-				}
+				// _, err := strconv.Atoi(args[0])
+				// if err != nil {
+				// 	os.Exit(1)
+				// }
+				// _, err = strconv.Atoi(args[1])
+				// if err != nil {
+				// 	os.Exit(1)
+				// }
 				xl = binary.BigEndian.Uint32([]byte(args[0]))
 				xr = binary.BigEndian.Uint32([]byte(args[1]))
 				binary.BigEndian.PutUint32(b, xl)
