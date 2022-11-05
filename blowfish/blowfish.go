@@ -122,6 +122,34 @@ func (bf *Blowfish) Decrypt(xl, xr *uint32) {
 	*xr = Xr
 }
 
+// Decrypt full string
+func DecryptLoop(str string, bf Blowfish) []byte {
+	bfstruct := bf
+	var tmp uint32
+	var xl, xr uint32
+	var length int
+	var result []byte
+	b := make([]byte, 4)
+	if len(str)%8 == 0 {
+		length = len(str)
+	} else {
+		length += (8 - (len(str) % 8))
+	}
+	k := 0
+	for i := 0; i < int(length); i += 8 {
+		split64bitsTo32bits(join8bitsto64bits(str, &k), &xl, &xr)
+		tmp = xl
+		xl = xr
+		xr = tmp
+		bfstruct.Decrypt(&xl, &xr)
+		binary.BigEndian.PutUint32(b, xl)
+		result = append(result, b...)
+		binary.BigEndian.PutUint32(b, xr)
+		result = append(result, b...)
+	}
+	return result
+}
+
 // f - main function
 func (bf *Blowfish) f(x uint32) uint32 {
 	d := uint16(x & 0xff)
