@@ -151,6 +151,25 @@ hexadecimal and as a string`,
 			fmt.Println(string(result))
 		},
 	}
+
+	fullencryptCmd = &cobra.Command{
+		Use:   "string [string]",
+		Short: "encrypts string",
+		Args:  cobra.MaximumNArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			var bf = *blowfish.New(blowfish.Key)
+			var bytestr []byte = blowfish.EncryptLoop(strings.Join(args, " "), bf)
+			cipherstr := string(bytestr)
+			cipherint := binary.BigEndian.Uint64([]byte(cipherstr))
+			fmt.Println(strings.Join(args, " "))
+			fmt.Println([]byte(strings.Join(args, " ")))
+			fmt.Println("ciphertext in bytes = ", bytestr)
+			fmt.Println("ciphertext in string = ", cipherstr)
+			fmt.Printf("ciphertext in hex = %#x\n", cipherint)
+			fmt.Printf("ciphertext in int = %d\n", cipherint)
+		},
+	}
+
 	decryptCmd = &cobra.Command{
 		Use:   "decrypt",
 		Short: "decrypt 64 bits",
@@ -237,6 +256,9 @@ func init() {
 	getCmd.AddCommand(getSboxCmd)
 	getCmd.AddCommand(getPkeyCmd)
 	getCmd.AddCommand(getAllCmd)
+
+	// encryptCmd commands
+	encryptCmd.AddCommand(fullencryptCmd)
 
 	// flags
 	encryptCmd.Flags().StringVarP(&mode, "mode", "m", "", "mode of input (string, hex, decimal)")
