@@ -115,3 +115,35 @@ func split64bitsTo32bits(block64b uint64, xl *uint32, xr *uint32) {
 	*xr = uint32(block64b >> 32)
 	*xl = uint32(block64b)
 }
+
+// puts the following 8 bytes of the input string
+// in a 64 - bit block in a cycle of 8 iterations
+// of 8 bits per iteration
+func join8bitsto64bits(str string, k *int) uint64 {
+	kindex := *k
+	/*
+		stores the number of the last
+		byte undivided into blocks of a string
+	*/
+	bytestr := []byte(str)
+	/*
+		converts a string into a set of bytes,
+		one character in Latin is 1 byte,
+		1 character in Cyrillic is 2 bytes
+	*/
+	block64b := uint64(0)
+	/*
+		initialize the block in 64 bits,
+		every 8 bytes of the string
+		will be entered into it
+	*/
+	for p := kindex; kindex < p+8; kindex++ {
+		if kindex >= len(bytestr) {
+			block64b <<= 8
+		} else {
+			block64b = (block64b << 8) | uint64(bytestr[kindex])
+		}
+	}
+	*k = kindex // stores the index of the string bit
+	return block64b
+}
