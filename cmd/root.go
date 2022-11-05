@@ -150,6 +150,62 @@ hexadecimal and as a string`,
 			fmt.Println(string(result))
 		},
 	}
+	decryptCmd = &cobra.Command{
+		Use:   "decrypt",
+		Short: "decrypt 64 bits",
+		Long: `decrypts 2 variables in 3 different modes:
+decimal, hexadecimal and as a string`,
+		Args: cobra.MaximumNArgs(2),
+		Run: func(cmd *cobra.Command, args []string) {
+			b := make([]byte, 4)
+			result := make([]byte, 8)
+			var xl uint32
+			var xr uint32
+			if binary.BigEndian.Uint32([]byte(args[0])) > 0xffffffff || binary.BigEndian.Uint32([]byte(args[1])) > 0xffffffff {
+				fmt.Println("arguments can't contain more than 64 bits")
+				os.Exit(1)
+			}
+			switch mode {
+			case "string":
+				xl = binary.BigEndian.Uint32([]byte(args[0]))
+				xr = binary.BigEndian.Uint32([]byte(args[1]))
+				binary.BigEndian.PutUint32(b, xl)
+				fmt.Println(b)
+				binary.BigEndian.PutUint32(b, xr)
+				fmt.Println(b)
+			case "hex":
+				l, _ := strconv.ParseUint(args[0], 16, 32)
+				r, _ := strconv.ParseUint(args[1], 16, 32)
+				xl = uint32(l)
+				xr = uint32(r)
+				fmt.Printf("%#x %#x \n", xl, xr)
+			case "decimal":
+				l, _ := strconv.ParseUint(args[0], 10, 32)
+				r, _ := strconv.ParseUint(args[1], 10, 32)
+				xl = uint32(l)
+				xr = uint32(r)
+				fmt.Printf("%d %d \n", xl, xr)
+			default:
+				os.Exit(1)
+			}
+			var bf = &blowfish.Blowfish{}
+			bf = blowfish.New(blowfish.Key)
+			bf.Decrypt(&xl, &xr)
+			binary.BigEndian.PutUint32(b, xl)
+			fmt.Println("source text xl in []byte: ", b)
+			result = append(result, b...)
+			binary.BigEndian.PutUint32(b, xr)
+			fmt.Println("source text xj in []byte: ", b)
+
+			fmt.Println("source text xl in decimal: ", xl)
+			fmt.Println("source text xr in decimal: ", xr)
+			fmt.Printf("source text xl in hex: %#x\n", xl)
+			fmt.Printf("source text xr in hex: %#x\n", xr)
+
+			result = append(result, b...)
+			fmt.Println(string(result))
+		},
+	}
 )
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -173,6 +229,7 @@ func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	rootCmd.AddCommand(getCmd)
 	rootCmd.AddCommand(encryptCmd)
+	rootCmd.AddCommand(decryptCmd)
 
 	// getCmd commands
 	getCmd.AddCommand(getSboxCmd)
@@ -181,5 +238,6 @@ func init() {
 
 	// flags
 	encryptCmd.Flags().StringVarP(&mode, "mode", "m", "", "mode of input (string, hex, decimal)")
+	decryptCmd.Flags().StringVarP(&mode, "mode", "m", "", "mode of input (string, hex, decimal)")
 
 }
