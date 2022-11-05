@@ -1,6 +1,8 @@
 package blowfish
 
-import "bfish/src"
+import (
+	"bfish/src"
+)
 
 var N int = 16
 
@@ -105,4 +107,11 @@ func (bf *Blowfish) f(x uint32) uint32 {
 	y = y ^ bf.S[2][c]
 	y = y + bf.S[3][d]
 	return y
+}
+
+// splits a 64-bit block into 2 32-bit blocks
+func split64bitsTo32bits(block64b uint64, xl *uint32, xr *uint32) {
+	// bytestr := binary.BigEndian.Uint64([]byte(str))
+	*xr = uint32(block64b >> 32)
+	*xl = uint32(block64b)
 }
