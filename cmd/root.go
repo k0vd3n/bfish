@@ -162,21 +162,7 @@ hexadecimal and as a string`,
 			var bf = *blowfish.New(blowfish.Key)
 			bytearr := []byte(strings.Join(args, " "))
 			var bytestr []byte = blowfish.EncryptLoop(bytearr /*strings.Join(args, " ")*/, bf)
-			cipherstr := string(bytestr)
-			fmt.Printf("ciphertext in hex = ")
-			for i := 0; i < len(bytestr); i++ {
-				fmt.Printf("%x ", bytestr[i])
-			}
-			fmt.Printf("\n")
-			fmt.Printf("ciphertext in decimal = ")
-			for i := 0; i < len(bytestr); i++ {
-				fmt.Printf("%d ", bytestr[i])
-			}
-			fmt.Printf("\n")
-			fmt.Println(strings.Join(args, " "))
-			fmt.Println([]byte(strings.Join(args, " ")))
-			fmt.Println("ciphertext in bytes = ", bytestr)
-			fmt.Println("ciphertext in string = ", cipherstr)
+			fmt.Println("\n", "ciphertext in bytes = ", bytestr)
 		},
 	}
 
