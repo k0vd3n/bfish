@@ -237,6 +237,34 @@ decimal, hexadecimal and as a string`,
 			fmt.Println(string(result))
 		},
 	}
+
+	fulldecryptCmd = &cobra.Command{
+		Use:   "full [string]",
+		Short: "encrypts message",
+		Args:  cobra.MinimumNArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			var intString []int
+			for i := 0; i < len(args); i++ {
+				x, _ := strconv.ParseInt(args[i], 10, 10)
+				intString = append(intString, int(x))
+			}
+			newarr := make([]byte, 2)
+			var sourcearr []byte
+			for i := 0; i < len(intString); i++ {
+				newarr[0] = 0
+				binary.BigEndian.PutUint16(newarr, uint16(intString[i]))
+				sourcearr = append(sourcearr, newarr[1])
+			}
+
+			fmt.Println("ciphertext in bytes = ", strings.Join(args, " "))
+			var bf = *blowfish.New(blowfish.Key)
+			bytestr := blowfish.DecryptLoop(sourcearr, bf)
+			decryptedstr := string(bytestr)
+			fmt.Printf("\n")
+			fmt.Println("decrypted message in bytes = ", bytestr)
+			fmt.Println("decrypted message in string = ", decryptedstr)
+		},
+	}
 )
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -269,6 +297,9 @@ func init() {
 
 	// encryptCmd commands
 	encryptCmd.AddCommand(fullencryptCmd)
+
+	// decryptCmd commands
+	decryptCmd.AddCommand(fulldecryptCmd)
 
 	// flags
 	encryptCmd.Flags().StringVarP(&mode, "mode", "m", "", "mode of input (string, hex, decimal)")
