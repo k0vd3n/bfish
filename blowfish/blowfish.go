@@ -77,7 +77,7 @@ func (bf *Blowfish) Encrypt(xl, xr *uint32) {
 }
 
 // Encrypt full string
-func EncryptLoop(str string, bf Blowfish) []byte {
+func EncryptLoop(str []byte, bf Blowfish) []byte {
 	bfstruct := bf
 	var tmp uint32
 	var xl, xr uint32
@@ -87,6 +87,7 @@ func EncryptLoop(str string, bf Blowfish) []byte {
 	if len(str)%8 == 0 {
 		length = len(str)
 	} else {
+		length = len(str)
 		length += (8 - (len(str) % 8))
 	}
 	k := 0
@@ -123,7 +124,7 @@ func (bf *Blowfish) Decrypt(xl, xr *uint32) {
 }
 
 // Decrypt full string
-func DecryptLoop(str string, bf Blowfish) []byte {
+func DecryptLoop(str []byte, bf Blowfish) []byte {
 	bfstruct := bf
 	var tmp uint32
 	var xl, xr uint32
@@ -176,13 +177,13 @@ func split64bitsTo32bits(block64b uint64, xl *uint32, xr *uint32) {
 // puts the following 8 bytes of the input string
 // in a 64 - bit block in a cycle of 8 iterations
 // of 8 bits per iteration
-func join8bitsto64bits(str string, k *int) uint64 {
+func join8bitsto64bits(str []byte, k *int) uint64 {
 	kindex := *k
 	/*
 		stores the number of the last
 		byte undivided into blocks of a string
 	*/
-	bytestr := []byte(str)
+	// bytestr := []byte(str)
 	/*
 		converts a string into a set of bytes,
 		one character in Latin is 1 byte,
@@ -195,10 +196,10 @@ func join8bitsto64bits(str string, k *int) uint64 {
 		will be entered into it
 	*/
 	for p := kindex; kindex < p+8; kindex++ {
-		if kindex >= len(bytestr) {
+		if kindex >= len(str) {
 			block64b <<= 8
 		} else {
-			block64b = (block64b << 8) | uint64(bytestr[kindex])
+			block64b = (block64b << 8) | uint64(str[kindex])
 		}
 	}
 	*k = kindex // stores the index of the string bit

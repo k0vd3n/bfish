@@ -153,20 +153,30 @@ hexadecimal and as a string`,
 	}
 
 	fullencryptCmd = &cobra.Command{
-		Use:   "string [string]",
-		Short: "encrypts string",
+		Use:   "full [string]",
+		Short: "encrypts message",
 		Args:  cobra.MaximumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Println("source string = ", strings.Join(args, " "))
+			fmt.Println("source string in bytes = ", []byte(strings.Join(args, " ")))
 			var bf = *blowfish.New(blowfish.Key)
-			var bytestr []byte = blowfish.EncryptLoop(strings.Join(args, " "), bf)
+			bytearr := []byte(strings.Join(args, " "))
+			var bytestr []byte = blowfish.EncryptLoop(bytearr /*strings.Join(args, " ")*/, bf)
 			cipherstr := string(bytestr)
-			cipherint := binary.BigEndian.Uint64([]byte(cipherstr))
+			fmt.Printf("ciphertext in hex = ")
+			for i := 0; i < len(bytestr); i++ {
+				fmt.Printf("%x ", bytestr[i])
+			}
+			fmt.Printf("\n")
+			fmt.Printf("ciphertext in decimal = ")
+			for i := 0; i < len(bytestr); i++ {
+				fmt.Printf("%d ", bytestr[i])
+			}
+			fmt.Printf("\n")
 			fmt.Println(strings.Join(args, " "))
 			fmt.Println([]byte(strings.Join(args, " ")))
 			fmt.Println("ciphertext in bytes = ", bytestr)
 			fmt.Println("ciphertext in string = ", cipherstr)
-			fmt.Printf("ciphertext in hex = %#x\n", cipherint)
-			fmt.Printf("ciphertext in int = %d\n", cipherint)
 		},
 	}
 
