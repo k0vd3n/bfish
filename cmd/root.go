@@ -66,7 +66,7 @@ var (
 		},
 	}
 	getNRoundsCmd = &cobra.Command{
-		Use:   "nrounds [pkey number]",
+		Use:   "nrounds",
 		Short: "prints nrounds",
 		Args:  cobra.MaximumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
@@ -75,8 +75,8 @@ var (
 		},
 	}
 	getKeyCmd = &cobra.Command{
-		Use:   "nrounds [pkey number]",
-		Short: "prints nrounds",
+		Use:   "key",
+		Short: "prints key",
 		Args:  cobra.MaximumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			result := srctxt.ReadKey()
@@ -121,7 +121,7 @@ example: get all pkeys; get all sboxes`,
 		},
 	}
 	changePkeyCmd = &cobra.Command{
-		Use:   "pkey [string]",
+		Use:   "pkey [number in decimal] [index]",
 		Short: "changes pkey",
 		Args:  cobra.MaximumNArgs(2),
 		Run: func(cmd *cobra.Command, args []string) {
@@ -133,7 +133,7 @@ example: get all pkeys; get all sboxes`,
 		},
 	}
 	changeSboxCmd = &cobra.Command{
-		Use:   "sbox [string]",
+		Use:   "sbox [number in decimal] [number of sbox] [value]",
 		Short: "changes sbox",
 		Args:  cobra.MaximumNArgs(3),
 		Run: func(cmd *cobra.Command, args []string) {
@@ -146,9 +146,14 @@ example: get all pkeys; get all sboxes`,
 		},
 	}
 	changeNCmd = &cobra.Command{
-		Use:   "nrounds [string]",
+		Use:   "nrounds [int]",
 		Short: "changes nrounds",
-		Args:  cobra.MaximumNArgs(1),
+		Long: `the value of this variable is equal to the number of permutations,
+that is, if you enter 16, then 18 round keys will be used, 
+since there is no permutation at the last stage and two 
+numbers are used for the xor operation on the 
+two halves of a 64-bit message`,
+		Args: cobra.MaximumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			val, _ := strconv.Atoi(strings.Join(args, " "))
 			srctxt.NewN(val)
@@ -226,7 +231,7 @@ hexadecimal and as a string`,
 
 	fullencryptCmd = &cobra.Command{
 		Use:   "full [string]",
-		Short: "encrypts message",
+		Short: "encrypts message string",
 		Args:  cobra.MaximumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Println("source string = ", strings.Join(args, " "))
@@ -298,8 +303,11 @@ decimal, hexadecimal and as a string`,
 
 	fulldecryptCmd = &cobra.Command{
 		Use:   "full [string]",
-		Short: "encrypts message",
-		Args:  cobra.MinimumNArgs(1),
+		Short: "decrypts the byte array that you received during encryption",
+		Long: `enter a byte array separated by a space 
+without brackets () {} [] 
+and also without dots and commas`,
+		Args: cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			var intString []int
 			for i := 0; i < len(args); i++ {

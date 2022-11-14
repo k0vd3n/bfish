@@ -1,7 +1,7 @@
 package blowfish
 
 import (
-	srctxt "bfish/srcTxt"
+	srctxt "bfish/srctxt"
 	"encoding/binary"
 )
 
