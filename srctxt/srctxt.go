@@ -2,7 +2,6 @@ package srctxt
 
 import (
 	"bufio"
-	"encoding/binary"
 	"fmt"
 	"log"
 	"os"
@@ -110,10 +109,16 @@ func ReadKey() []byte {
 }
 
 func ReadN() int {
-	n, err := os.ReadFile("NRounds.txt")
+	result := 0
+	n, err := os.Open("NRounds.txt")
 	if err != nil {
 		log.Fatal(err)
 
 	}
-	return int(binary.BigEndian.Uint64(n))
+	scanner := bufio.NewScanner(n)
+	for scanner.Scan() {
+		result, _ = strconv.Atoi(scanner.Text())
+
+	}
+	return result
 }
