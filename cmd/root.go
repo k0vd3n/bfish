@@ -5,7 +5,7 @@ package cmd
 
 import (
 	"bfish/blowfish"
-	"bfish/src"
+	srctxt "bfish/srcTxt"
 	"encoding/binary"
 	"fmt"
 	"os"
@@ -51,7 +51,8 @@ var (
 		Run: func(cmd *cobra.Command, args []string) {
 			i, _ := strconv.Atoi(args[0])
 			j, _ := strconv.Atoi(args[1])
-			fmt.Printf("%#x\n", src.ORIG_S[i][j])
+			result := srctxt.ReadSboxes()
+			fmt.Printf("%#x\n", result[i][j])
 		},
 	}
 	getPkeyCmd = &cobra.Command{
@@ -60,7 +61,26 @@ var (
 		Args:  cobra.MaximumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			i, _ := strconv.Atoi(args[0])
-			fmt.Printf("%#x\n", src.ORIG_P[i])
+			result := srctxt.ReadPkeys()
+			fmt.Printf("%#x\n", result[i])
+		},
+	}
+	getNRoundsCmd = &cobra.Command{
+		Use:   "nrounds [pkey number]",
+		Short: "prints nrounds",
+		Args:  cobra.MaximumNArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			result := srctxt.ReadN()
+			fmt.Println(result)
+		},
+	}
+	getKeyCmd = &cobra.Command{
+		Use:   "nrounds [pkey number]",
+		Short: "prints nrounds",
+		Args:  cobra.MaximumNArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			result := srctxt.ReadKey()
+			fmt.Println(result)
 		},
 	}
 	getAllCmd = &cobra.Command{
@@ -72,18 +92,70 @@ example: get all pkeys; get all sboxes`,
 		Run: func(cmd *cobra.Command, args []string) {
 			switch strings.Join(args, " ") {
 			case "s", "sboxes":
-				for i := 0; i < 4; i++ {
-					for j := 0; j < 256; j++ {
-						fmt.Printf("%#x\n", src.ORIG_S[i][j])
+				result := srctxt.ReadSboxes()
+				for _, row := range result {
+					for _, val := range row {
+						fmt.Printf("%#x\n", val)
 					}
 				}
 			case "p", "pkeys":
-				for i := 0; i < 18; i++ {
-					fmt.Printf("%#x\n", src.ORIG_P[i])
+				result := srctxt.ReadPkeys()
+				for _, val := range result {
+					fmt.Printf("%#x\n", val)
 				}
 			}
 		},
 	}
+	changeCmd = &cobra.Command{
+		Use:   "change [strings to commands]",
+		Short: "changes Sboxes, Pkeys, Nrounds, Key",
+		Args:  cobra.MaximumNArgs(1),
+	}
+	changeKeyCmd = &cobra.Command{
+		Use:   "key [string]",
+		Short: "changes key",
+		Args:  cobra.MaximumNArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			srctxt.NewKey([]byte(strings.Join(args, " ")))
+
+		},
+	}
+	changePkeyCmd = &cobra.Command{
+		Use:   "pkey [string]",
+		Short: "changes pkey",
+		Args:  cobra.MaximumNArgs(2),
+		Run: func(cmd *cobra.Command, args []string) {
+			pkeys := srctxt.ReadPkeys()
+			index, _ := strconv.Atoi(args[1])
+			val, _ := strconv.ParseUint(args[0], 10, 32)
+			pkeys[index] = uint32(val)
+			srctxt.NewPkeys(pkeys)
+		},
+	}
+	changeSboxCmd = &cobra.Command{
+		Use:   "sbox [string]",
+		Short: "changes sbox",
+		Args:  cobra.MaximumNArgs(3),
+		Run: func(cmd *cobra.Command, args []string) {
+			sbox := srctxt.ReadSboxes()
+			i, _ := strconv.Atoi(args[1])
+			j, _ := strconv.Atoi(args[2])
+			val, _ := strconv.ParseUint(args[0], 10, 32)
+			sbox[i][j] = uint32(val)
+			srctxt.NewSboxes(sbox)
+		},
+	}
+	changeNCmd = &cobra.Command{
+		Use:   "nrounds [string]",
+		Short: "changes nrounds",
+		Args:  cobra.MaximumNArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			val, _ := strconv.Atoi(strings.Join(args, " "))
+			srctxt.NewN(val)
+
+		},
+	}
+
 	encryptCmd = &cobra.Command{
 		Use:   "encrypt [string] [string]",
 		Short: "encrypts 64 bits",
@@ -273,6 +345,7 @@ func init() {
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	rootCmd.AddCommand(getCmd)
+	rootCmd.AddCommand(changeCmd)
 	rootCmd.AddCommand(encryptCmd)
 	rootCmd.AddCommand(decryptCmd)
 
@@ -280,7 +353,16 @@ func init() {
 	getCmd.AddCommand(getSboxCmd)
 	getCmd.AddCommand(getPkeyCmd)
 	getCmd.AddCommand(getAllCmd)
+	getCmd.AddCommand(getKeyCmd)
+	getCmd.AddCommand(getNRoundsCmd)
+	getCmd.AddCommand(getPkeyCmd)
+	getCmd.AddCommand(getSboxCmd)
 
+	// changeCmd commands
+	changeCmd.AddCommand(changeKeyCmd)
+	changeCmd.AddCommand(changeNCmd)
+	changeCmd.AddCommand(changePkeyCmd)
+	changeCmd.AddCommand(changeSboxCmd)
 	// encryptCmd commands
 	encryptCmd.AddCommand(fullencryptCmd)
 

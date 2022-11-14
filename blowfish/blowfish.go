@@ -1,7 +1,7 @@
 package blowfish
 
 import (
-	"bfish/src"
+	srctxt "bfish/srcTxt"
 	"encoding/binary"
 )
 
@@ -17,12 +17,13 @@ type Blowfish struct {
 // New
 func New(key []byte) *Blowfish {
 	bf := &Blowfish{}
-
+	sboxes := srctxt.ReadSboxes()
+	pkeys := srctxt.ReadPkeys()
 	keyLen := len(key)
 
 	for i := 0; i < 4; i++ {
 		for j := 0; j < 256; j++ {
-			bf.S[i][j] = src.ORIG_S[i][j]
+			bf.S[i][j] = sboxes[i][j] /*srctxt.ReadSboxes()[i][j]*/
 		}
 	}
 
@@ -36,7 +37,7 @@ func New(key []byte) *Blowfish {
 				k = 0
 			}
 		}
-		bf.P[i] = src.ORIG_P[i] ^ data
+		bf.P[i] = pkeys[i] ^ data
 	}
 
 	datal := uint32(0)
