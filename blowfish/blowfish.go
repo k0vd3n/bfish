@@ -5,8 +5,6 @@ import (
 	"encoding/binary"
 )
 
-var N int = 16
-
 var Key = []byte("This is a crypto blowfish 448 bits key and 64 bits text!")
 
 type Blowfish struct {
@@ -28,7 +26,7 @@ func New(key []byte) *Blowfish {
 	}
 
 	k := 0
-	for i := 0; i < (N + 2); i++ {
+	for i := 0; i < (srctxt.ReadN() + 2); i++ {
 		data := uint32(0)
 		for j := 0; j < 4; j++ {
 			data = (data << 8) | uint32(key[k])
@@ -43,7 +41,7 @@ func New(key []byte) *Blowfish {
 	datal := uint32(0)
 	datar := uint32(0)
 
-	for i := 0; i < (N + 2); i += 2 {
+	for i := 0; i < (srctxt.ReadN() + 2); i += 2 {
 		bf.Encrypt(&datal, &datar)
 		bf.P[i] = datal
 		bf.P[i+1] = datar
@@ -64,15 +62,15 @@ func (bf *Blowfish) Encrypt(xl, xr *uint32) {
 	Xl := *xl
 	Xr := *xr
 
-	for i := 0; i < N; i++ {
+	for i := 0; i < srctxt.ReadN(); i++ {
 		Xl = Xl ^ bf.P[i]
 		Xr = bf.f(Xl) ^ Xr
 		Xl, Xr = Xr, Xl
 	}
 
 	Xl, Xr = Xr, Xl
-	Xr = Xr ^ bf.P[N]
-	Xl = Xl ^ bf.P[N+1]
+	Xr = Xr ^ bf.P[srctxt.ReadN()]
+	Xl = Xl ^ bf.P[srctxt.ReadN()+1]
 	*xl = Xl
 	*xr = Xr
 }
@@ -111,7 +109,7 @@ func (bf *Blowfish) Decrypt(xl, xr *uint32) {
 	Xl := *xl
 	Xr := *xr
 
-	for i := (N + 1); i > 1; i-- {
+	for i := (srctxt.ReadN() + 1); i > 1; i-- {
 		Xl = Xl ^ bf.P[i]
 		Xr = bf.f(Xl) ^ Xr
 		Xl, Xr = Xr, Xl
