@@ -206,7 +206,7 @@ hexadecimal and as a string`,
 				os.Exit(1)
 			}
 			var bf = &blowfish.Blowfish{}
-			bf = blowfish.New(blowfish.Key)
+			bf = blowfish.New(srctxt.ReadKey())
 			bf.Encrypt(&xl, &xr)
 			binary.BigEndian.PutUint32(b, xl)
 			fmt.Println("ciphertex xl in []byte: ", b)
@@ -231,7 +231,7 @@ hexadecimal and as a string`,
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Println("source string = ", strings.Join(args, " "))
 			fmt.Println("source string in bytes = ", []byte(strings.Join(args, " ")))
-			var bf = *blowfish.New(blowfish.Key)
+			var bf = *blowfish.New(srctxt.ReadKey())
 			bytearr := []byte(strings.Join(args, " "))
 			var bytestr []byte = blowfish.EncryptLoop(bytearr /*strings.Join(args, " ")*/, bf)
 			fmt.Println("\n", "ciphertext in bytes = ", bytestr)
@@ -278,7 +278,7 @@ decimal, hexadecimal and as a string`,
 				os.Exit(1)
 			}
 			var bf = &blowfish.Blowfish{}
-			bf = blowfish.New(blowfish.Key)
+			bf = blowfish.New(srctxt.ReadKey())
 			bf.Decrypt(&xl, &xr)
 			binary.BigEndian.PutUint32(b, xl)
 			fmt.Println("source text xl in []byte: ", b)
@@ -315,7 +315,7 @@ decimal, hexadecimal and as a string`,
 			}
 
 			fmt.Println("ciphertext in bytes = ", strings.Join(args, " "))
-			var bf = *blowfish.New(blowfish.Key)
+			var bf = *blowfish.New(srctxt.ReadKey())
 			bytestr := blowfish.DecryptLoop(sourcearr, bf)
 			decryptedstr := string(bytestr)
 			fmt.Printf("\n")
