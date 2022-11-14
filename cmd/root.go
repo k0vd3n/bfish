@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
+Copyright © 2022 NAME HERE dborodenkov1@gmail.com
 */
 package cmd
 
@@ -34,9 +34,6 @@ var (
 			myFigure.Print()
 			fmt.Println("  use flag -h or --help for more information")
 		},
-		// Uncomment the following line if your bare application
-		// has an action associated with it:
-		// Run: func(cmd *cobra.Command, args []string) { },
 	}
 	getCmd = &cobra.Command{
 		Use:   "get [strings to commands]",
@@ -174,20 +171,8 @@ hexadecimal and as a string`,
 			result := make([]byte, 8)
 			var xl uint32
 			var xr uint32
-			// if binary.BigEndian.Uint32([]byte(args[0])) > 0xffffffff || binary.BigEndian.Uint32([]byte(args[1])) > 0xffffffff {
-			// 	fmt.Println("arguments can't contain more than 64 bits")
-			// 	os.Exit(1)
-			// }
 			switch mode {
 			case "string":
-				// _, err := strconv.Atoi(args[0])
-				// if err != nil {
-				// 	os.Exit(1)
-				// }
-				// _, err = strconv.Atoi(args[1])
-				// if err != nil {
-				// 	os.Exit(1)
-				// }
 				xl = binary.BigEndian.Uint32([]byte(args[0]))
 				xr = binary.BigEndian.Uint32([]byte(args[1]))
 				binary.BigEndian.PutUint32(b, xl)
@@ -238,7 +223,7 @@ hexadecimal and as a string`,
 			fmt.Println("source string in bytes = ", []byte(strings.Join(args, " ")))
 			var bf = *blowfish.New(srctxt.ReadKey())
 			bytearr := []byte(strings.Join(args, " "))
-			var bytestr []byte = blowfish.EncryptLoop(bytearr /*strings.Join(args, " ")*/, bf)
+			var bytestr []byte = blowfish.EncryptLoop(bytearr, bf)
 			fmt.Println("\n", "ciphertext in bytes = ", bytestr)
 		},
 	}
