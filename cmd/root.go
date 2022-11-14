@@ -80,7 +80,7 @@ var (
 		Args:  cobra.MaximumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			result := srctxt.ReadKey()
-			fmt.Println(result)
+			fmt.Println(string(result))
 		},
 	}
 	getAllCmd = &cobra.Command{
