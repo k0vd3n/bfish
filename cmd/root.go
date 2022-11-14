@@ -5,7 +5,7 @@ package cmd
 
 import (
 	"bfish/blowfish"
-	srctxt "bfish/srcTxt"
+	srctxt "bfish/srctxt"
 	"encoding/binary"
 	"fmt"
 	"os"
