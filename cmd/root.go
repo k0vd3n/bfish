@@ -160,7 +160,7 @@ two halves of a 64-bit message`,
 
 	encryptCmd = &cobra.Command{
 		Use:   "encrypt [string] [string]",
-		Short: "encrypts 64 bits",
+		Short: "encrypts 64 bits or full message",
 		Long: `accepts 2 strings in hex, each of which is half of a 64-bit fragment.
 encrypts data in 3 different modes: decimal, hexadecimal and as a string. 
 The output gives two types of encrypted data in 3 different types: decimal, 
@@ -230,9 +230,9 @@ hexadecimal and as a string`,
 
 	decryptCmd = &cobra.Command{
 		Use:   "decrypt",
-		Short: "decrypt 64 bits",
+		Short: "decrypt 64 bits or full message",
 		Long: `decrypts 2 variables in 3 different modes:
-decimal, hexadecimal and as a string`,
+decimal, hexadecimal and as a string or decrypt array of bytes`,
 		Args: cobra.MaximumNArgs(2),
 		Run: func(cmd *cobra.Command, args []string) {
 			b := make([]byte, 4)
