@@ -6,7 +6,7 @@ bfish is an application for symmetric encryption and decryption of text, hex, de
 	
 Designed by Bruce Schneierin 1993. It is a Feistel network. Performed on simple and fast operations: XOR, substitution, addition. It is non-proprietary and freely distributed. You can readmore about how the algorithm works on the Internet
 
-The program can show the current value of the main key, the round keys of the boxes and the number of rounds
+The program can show the current value of the main key, the round keys, the sboxes and the number of rounds
  
 The program can change the values of the boxes, round keys, number of rounds and the main key 
 
